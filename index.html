@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aave V4 Knowledge Test</title>
+    <style>
+        /* Global Styles */
+        :root {
+            --primary-color: #007bff;
+            --primary-light: #e6f2ff;
+            --secondary-color: #6c757d;
+            --background-color: #f4f7f9;
+            --card-background: #ffffff;
+            --correct-color: #28a745;
+            --incorrect-color: #dc3545;
+            --font-family: 'Inter', sans-serif;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --border-radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: var(--background-color);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23e8e8e8" fill-opacity="0.4"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zm0 60v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM12 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM12 4v-4H10v4H6v2h4v4h2V6h4V4h-4zm0 60v-4H10v4H6v2h4v4h2v-4h4v-2h-4zM48 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zm0 60v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+        }
+
+        .container {
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 100%;
+            max-width: 800px;
+            padding: 40px;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: var(--secondary-color);
+            font-size: 1rem;
+        }
+
+        .quiz-section {
+            display: none;
+        }
+
+        .quiz-section.active {
+            display: block;
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-counter {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-color);
+            width: 0%;
+            transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .question {
+            background: var(--card-background);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            margin-bottom: 25px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .question h3 {
+            color: #212529;
+            font-size: 1.4rem;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        .options {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 18px 22px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+        }
+
+        .option:hover {
+            border-color: var(--primary-color);
+            background: var(--primary-light);
+        }
+
+        .option.selected {
+            border-color: var(--primary-color);
+            background: var(--primary-light);
+        }
+
+        .option.correct {
+            border-color: var(--correct-color);
+            background: rgba(40, 167, 69, 0.1);
+            animation: correctPulse 0.6s ease;
+        }
+
+        .option.incorrect {
+            border-color: var(--incorrect-color);
+            background: rgba(220, 53, 69, 0.1);
+            animation: incorrectShake 0.6s ease;
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        @keyframes incorrectShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .feedback {
+            margin: 20px 0;
+            padding: 18px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--correct-color);
+            border: 2px solid var(--correct-color);
+        }
+
+        .feedback.incorrect {
+            background: rgba(220, 53, 69, 0.1);
+            color: var(--incorrect-color);
+            border: 2px solid var(--incorrect-color);
+        }
+
+        .buttons {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 8px;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 123, 255, 0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .start-screen {
+            text-align: center;
+        }
+
+        .start-screen h2 {
+            color: #212529;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .start-screen p {
+            color: var(--secondary-color);
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .results-screen {
+            text-align: center;
+        }
+
+        .results-screen h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .score-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            margin: 30px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: white;
+            background: var(--primary-color);
+            box-shadow: 0 8px 20px rgba(0, 123, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            border: 4px solid var(--primary-light);
+        }
+
+        .score-circle.excellent { background: var(--correct-color); border-color: rgba(40, 167, 69, 0.2); box-shadow: 0 8px 20px rgba(40, 167, 69, 0.2); }
+        .score-circle.good { background: #ffc107; border-color: rgba(255, 193, 7, 0.2); box-shadow: 0 8px 20px rgba(255, 193, 7, 0.2); }
+        .score-circle.average { background: #17a2b8; border-color: rgba(23, 162, 184, 0.2); box-shadow: 0 8px 20px rgba(23, 162, 184, 0.2); }
+        .score-circle.poor { background: var(--incorrect-color); border-color: rgba(220, 53, 69, 0.2); box-shadow: 0 8px 20px rgba(220, 53, 69, 0.2); }
+
+        .score-text {
+            font-size: 0.9rem;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        .results-message {
+            color: #212529;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin: 20px 0;
+        }
+
+        .results-breakdown {
+            background: #f8f9fa;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            font-size: 1.05rem;
+            color: #495057;
+        }
+
+        .breakdown-item strong {
+            color: #212529;
+            font-weight: 600;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .logo {
+                font-size: 1.8rem;
+            }
+            
+            .question h3 {
+                font-size: 1.2rem;
+            }
+            
+            .option {
+                padding: 15px;
+                font-size: 0.95rem;
+            }
+
+            .score-circle {
+                width: 140px;
+                height: 140px;
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">Aave V4 Knowledge Test</div>
+            <div class="subtitle">An Interactive Quiz on the Protocol's Latest Update</div>
+        </div>
+
+                <div id="start-screen" class="quiz-section active start-screen">
+            <h2>Welcome to the Aave V4 Quiz!</h2>
+            <p>This quiz will test your knowledge of the new architecture, key features, and development progress of the Aave V4 protocol. You'll get instant feedback on each answer and a final score at the end.</p>
+            <div class="buttons">
+                <button class="btn" onclick="startQuiz()">Start Quiz</button>
+        </div>
+        </div>
+
+                <div id="quiz-screen" class="quiz-section">
+            <div class="question-counter">
+                <span id="current-question">1</span> of <span id="total-questions">10</span>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+
+            <div class="question">
+                <h3 id="question-text"></h3>
+                <div class="options" id="options-container">
+                </div>
+            </div>
+
+            <div class="feedback" id="feedback"></div>
+
+            <div class="buttons">
+                <button class="btn" id="next-btn" onclick="nextQuestion()" disabled>Next Question</button>
+            </div>
+        </div>
+
+                <div id="results-screen" class="quiz-section results-screen">
+            <h2>Quiz Complete!</h2>
+            
+            <div class="score-circle" id="score-circle">
+                <div id="score-percentage">0%</div>
+                <div class="score-text">Score</div>
+            </div>
+
+            <div class="results-message" id="results-message"></div>
+
+            <div class="results-breakdown">
+                <div class="breakdown-item">
+                    <span>Correct Answers:</span>
+                    <strong id="correct-count">0</strong>
+                </div>
+                <div class="breakdown-item">
+                    <span>Incorrect Answers:</span>
+                    <strong id="incorrect-count">0</strong>
+                </div>
+                <div class="breakdown-item">
+                    <span>Total Questions:</span>
+                    <strong id="total-count">0</strong>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button class="btn" onclick="restartQuiz()">Take Quiz Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quiz data
+        const quizData = [
+            {
+                question: "What is the primary architectural change in Aave V4 compared to Aave V3?",
+                options: ["A move from a centralized database to a distributed ledger.", "A move from a monolithic design to a hub and spoke model.", "A shift from on-chain to off-chain governance.", "A transition from a single token model to a multi-token ecosystem."],
+                correct: 1
+            },
+            {
+                question: "What is the name of the central liquidity contract in the new Aave V4 architecture?",
+                options: ["The Liquidity Spoke", "The Liquidity Hub", "The Aave Engine", "The Aave Nexus"],
+                correct: 1
+            },
+            {
+                question: "How does Aave V4's new system calculate a borrower's interest rate?",
+                options: ["It is based solely on a fixed rate determined by governance.", "It uses a tiered system that adds a Risk Premium based on collateral quality.", "It is determined by a daily vote from AAVE token holders.", "It is a flat rate across all users, regardless of collateral type."],
+                correct: 1
+            },
+            {
+                question: "What is the purpose of the Dynamic Risk Configuration (DRC) in Aave V4?",
+                options: ["To allow existing borrowers to lock in their interest rate.", "To automatically liquidate high-risk positions.", "To enable the protocol to adjust risk parameters for new activity without affecting existing positions.", "To provide a manual override for interest rates."],
+                correct: 2
+            },
+            {
+                question: "Which of the following is NOT a core feature of the Aave V4 launch?",
+                options: ["Reinvestment", "Position Managers", "Native cross-chain bridging", "Umbrella Integration"],
+                correct: 2
+            },
+            {
+                question: "What is the primary benefit of Aave V4's hub and spoke model?",
+                options: ["It reduces transaction fees by a fixed percentage.", "It allows for greater modularity and the addition of new features without a full protocol upgrade.", "It enables Aave to operate on all major blockchains simultaneously.", "It makes the protocol completely resistant to all forms of cyber-attacks."],
+                correct: 1
+            },
+            {
+                question: "What is the status of the security review for the Aave V4 codebase?",
+                options: ["It has passed a single, final audit.", "It has not yet started.", "It is undergoing a multi-track security program, including audits by independent firms.", "It is being reviewed exclusively by the internal Aave development team."],
+                correct: 2
+            },
+            {
+                question: "How will Aave V4's new Aave Interface improve the user experience?",
+                options: ["By eliminating the need for a crypto wallet.", "By providing a centralized exchange for Aave token trading.", "By offering a single dashboard for users to interact with different Hubs and Spokes.", "By allowing users to borrow without providing any collateral."],
+                correct: 2
+            },
+            {
+                question: "What is the function of the new V4 Liquidation Engine?",
+                options: ["To prevent all liquidations by automatically adjusting loan-to-value ratios.", "To provide a centralized platform for manual liquidations.", "To handle liquidations in a more efficient and robust manner.", "To allow users to manually trigger liquidations on their own positions."],
+                correct: 2
+            },
+            {
+                question: "What will a planned roadmap post for mid-September outline?",
+                options: ["The details of the Aave V4 mainnet token airdrop.", "The go-to-market strategy for the production launch of V4.", "The final list of all assets that will be supported at launch.", "The official date for the migration from Aave V3 to V4."],
+                correct: 1
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedOption = -1;
+        let quizCompleted = false;
+
+        function startQuiz() {
+            document.getElementById('start-screen').classList.remove('active');
+            document.getElementById('quiz-screen').classList.add('active');
+            document.getElementById('total-questions').textContent = quizData.length;
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            if (currentQuestion >= quizData.length) {
+                showResults();
+                return;
+            }
+
+            const question = quizData[currentQuestion];
+            document.getElementById('current-question').textContent = currentQuestion + 1;
+            document.getElementById('question-text').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.onclick = () => selectOption(index);
+                optionsContainer.appendChild(optionElement);
+            });
+
+            // Update progress bar
+            const progress = ((currentQuestion) / quizData.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+
+            // Reset UI
+            selectedOption = -1;
+            document.getElementById('next-btn').disabled = true;
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('feedback').className = 'feedback';
+        }
+
+        function selectOption(index) {
+            if (selectedOption !== -1) return; // Prevent multiple selections
+
+            selectedOption = index;
+            const options = document.querySelectorAll('.option');
+            const question = quizData[currentQuestion];
+            
+            // Show correct/incorrect feedback
+            options.forEach((option, i) => {
+                if (i === question.correct) {
+                    option.classList.add('correct');
+                } else if (i === selectedOption && i !== question.correct) {
+                    option.classList.add('incorrect');
+                }
+                option.style.pointerEvents = 'none';
+            });
+
+            // Update score and show feedback
+            const feedback = document.getElementById('feedback');
+            if (selectedOption === question.correct) {
+                score++;
+                feedback.textContent = '🎉 Correct! Well done!';
+                feedback.className = 'feedback correct';
+            } else {
+                feedback.textContent = `❌ Incorrect. The correct answer is: ${question.options[question.correct]}`;
+                feedback.className = 'feedback incorrect';
+            }
+            
+            feedback.style.display = 'block';
+            document.getElementById('next-btn').disabled = false;
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            setTimeout(loadQuestion, 300); // Small delay for smooth transition
+        }
+
+        function showResults() {
+            document.getElementById('quiz-screen').classList.remove('active');
+            document.getElementById('results-screen').classList.add('active');
+            
+            const percentage = Math.round((score / quizData.length) * 100);
+            const scoreCircle = document.getElementById('score-circle');
+            
+            document.getElementById('score-percentage').textContent = percentage + '%';
+            document.getElementById('correct-count').textContent = score;
+            document.getElementById('incorrect-count').textContent = quizData.length - score;
+            document.getElementById('total-count').textContent = quizData.length;
+            
+            // Set score circle color and message based on performance
+            let message = '';
+            if (percentage >= 80) {
+                scoreCircle.className = 'score-circle excellent';
+                message = '🏆 Excellent! You\'re an Aave V4 expert!';
+            } else if (percentage >= 60) {
+                scoreCircle.className = 'score-circle good';
+                message = '👏 Good job! You did well!';
+            } else if (percentage >= 40) {
+                scoreCircle.className = 'score-circle average';
+                message = '👍 Not bad! Keep learning about the new features!';
+            } else {
+                scoreCircle.className = 'score-circle poor';
+                message = '💪 Don\'t give up! Review the Aave V4 update and try again!';
+            }
+            
+            document.getElementById('results-message').textContent = message;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            selectedOption = -1;
+            document.getElementById('results-screen').classList.remove('active');
+            document.getElementById('start-screen').classList.add('active');
+        }
+    </script>
+</body>
+</html>
