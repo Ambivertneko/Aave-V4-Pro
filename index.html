@@ -5,19 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aave V4 Knowledge Test</title>
     <style>
-        /* Global Styles */
+        /* Global & Pokemon Theme */
         :root {
-            --primary-color: #007bff;
-            --primary-light: #e6f2ff;
-            --secondary-color: #6c757d;
-            --background-color: #f4f7f9;
-            --card-background: #ffffff;
+            --pokemon-red: #ff3333;
+            --pokemon-blue: #3366ff;
+            --pokemon-yellow: #ffde00;
+            --bg-color: #212529;
+            --card-bg: #2b2f33;
+            --text-color: #f0f0f0;
+            --border-color: #6c757d;
             --correct-color: #28a745;
             --incorrect-color: #dc3545;
-            --font-family: 'Inter', sans-serif;
-            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            --border-radius: 12px;
+            --font-family: 'Press Start 2P', sans-serif;
+            --border-radius: 8px;
         }
+
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
         * {
             margin: 0;
@@ -27,41 +30,50 @@
 
         body {
             font-family: var(--font-family);
-            background: var(--background-color);
-            color: #333;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
-            background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23e8e8e8" fill-opacity="0.4"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zm0 60v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM12 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM12 4v-4H10v4H6v2h4v4h2V6h4V4h-4zm0 60v-4H10v4H6v2h4v4h2v-4h4v-2h-4zM48 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zm0 60v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><path fill="%23343a40" d="M10 0L0 10L10 20L20 10Z"/></svg>'), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><path fill="%23454a4f" d="M10 0L0 10L10 20L20 10Z"/></svg>');
+            background-size: 40px, 40px;
+            background-position: 0 0, 20px 20px;
         }
 
         .container {
-            background: var(--card-background);
+            background: var(--card-bg);
             border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
+            border: 4px solid var(--border-color);
+            box-shadow: 0 8px 0 var(--border-color);
             width: 100%;
-            max-width: 800px;
-            padding: 40px;
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            max-width: 600px;
+            padding: 30px;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .container:hover {
+            transform: translateY(-4px);
         }
 
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .logo {
-            font-size: 2.2rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 8px;
+            font-size: 1.8rem;
+            color: var(--pokemon-red);
+            text-shadow: 2px 2px 0 #000;
+            line-height: 1;
+            margin-bottom: 5px;
         }
 
         .subtitle {
-            color: var(--secondary-color);
-            font-size: 1rem;
+            color: var(--pokemon-blue);
+            font-size: 0.8rem;
+            text-shadow: 1px 1px 0 #000;
         }
 
         .quiz-section {
@@ -70,96 +82,98 @@
 
         .quiz-section.active {
             display: block;
-            animation: fadeIn 0.6s ease-in-out;
+            animation: fadeIn 0.5s ease-in-out;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .question-counter {
-            text-align: center;
-            margin-bottom: 20px;
-            color: var(--secondary-color);
-            font-size: 0.9rem;
+            text-align: right;
+            color: var(--pokemon-yellow);
+            font-size: 0.8rem;
+            text-shadow: 1px 1px 0 #000;
+            margin-bottom: 15px;
         }
 
         .progress-bar {
-            height: 8px;
-            background: #e9ecef;
-            border-radius: 4px;
-            margin-bottom: 30px;
+            height: 6px;
+            background: #3c3c3c;
+            border: 1px solid #1c1c1c;
+            border-radius: 3px;
+            margin-bottom: 25px;
             overflow: hidden;
         }
 
         .progress-fill {
             height: 100%;
-            background: var(--primary-color);
-            width: 0%;
-            transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            background: var(--pokemon-red);
+            transition: width 0.4s ease-in-out;
+            box-shadow: 0 0 5px var(--pokemon-red);
         }
 
         .question {
-            background: var(--card-background);
-            padding: 30px;
-            border-radius: var(--border-radius);
-            margin-bottom: 25px;
-            border: 1px solid #e0e0e0;
-            transition: all 0.3s ease;
+            background: #1c1c1c;
+            border: 2px solid #555;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
         }
 
         .question h3 {
-            color: #212529;
-            font-size: 1.4rem;
-            font-weight: 600;
-            line-height: 1.5;
-            margin-bottom: 25px;
+            color: var(--text-color);
+            font-size: 1rem;
+            text-shadow: 1px 1px 0 #000;
+            margin-bottom: 20px;
         }
 
         .options {
             display: grid;
-            gap: 15px;
+            gap: 10px;
         }
 
         .option {
-            background: #f8f9fa;
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            padding: 18px 22px;
+            background: #3c3c3c;
+            border: 2px solid #555;
+            border-radius: 6px;
+            padding: 12px;
             cursor: pointer;
             transition: all 0.2s ease;
-            font-size: 1rem;
+            font-size: 0.9rem;
+            text-shadow: 1px 1px 0 #000;
         }
 
         .option:hover {
-            border-color: var(--primary-color);
-            background: var(--primary-light);
+            background: #555;
+            transform: translateY(-2px);
         }
 
         .option.selected {
-            border-color: var(--primary-color);
-            background: var(--primary-light);
+            border-color: var(--pokemon-yellow);
         }
 
         .option.correct {
-            border-color: var(--correct-color);
-            background: rgba(40, 167, 69, 0.1);
-            animation: correctPulse 0.6s ease;
+            background: var(--correct-color);
+            border-color: #228b22;
+            color: #fff;
+            animation: pulse 0.6s ease;
         }
 
         .option.incorrect {
-            border-color: var(--incorrect-color);
-            background: rgba(220, 53, 69, 0.1);
-            animation: incorrectShake 0.6s ease;
+            background: var(--incorrect-color);
+            border-color: #a02030;
+            color: #fff;
+            animation: shake 0.6s ease;
         }
-
-        @keyframes correctPulse {
+        
+        @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.02); }
         }
 
-        @keyframes incorrectShake {
+        @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-5px); }
             75% { transform: translateX(5px); }
@@ -167,164 +181,133 @@
 
         .feedback {
             margin: 20px 0;
-            padding: 18px;
-            border-radius: var(--border-radius);
+            padding: 15px;
+            border-radius: 8px;
             text-align: center;
-            font-weight: 600;
+            font-weight: bold;
             display: none;
+            border: 2px solid;
+            text-shadow: 1px 1px 0 #000;
         }
 
         .feedback.correct {
-            background: rgba(40, 167, 69, 0.1);
-            color: var(--correct-color);
-            border: 2px solid var(--correct-color);
+            background: var(--correct-color);
+            color: #fff;
+            border-color: #228b22;
         }
 
         .feedback.incorrect {
-            background: rgba(220, 53, 69, 0.1);
-            color: var(--incorrect-color);
-            border: 2px solid var(--incorrect-color);
+            background: var(--incorrect-color);
+            color: #fff;
+            border-color: #a02030;
         }
 
         .buttons {
             text-align: center;
-            margin-top: 30px;
+            margin-top: 25px;
         }
 
         .btn {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 600;
+            background: var(--pokemon-yellow);
+            color: #333;
+            border: 2px solid #000;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 0 8px;
+            text-shadow: 1px 1px 0 #fff;
+            transition: transform 0.1s ease;
+            box-shadow: 2px 2px 0 #000;
         }
 
         .btn:hover {
-            background: #0056b3;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 123, 255, 0.2);
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 #000;
         }
 
         .btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
-            box-shadow: none;
+            box-shadow: 2px 2px 0 #000;
         }
         
-        .start-screen {
+        .start-screen, .results-screen {
             text-align: center;
         }
 
-        .start-screen h2 {
-            color: #212529;
+        .start-screen h2, .results-screen h2 {
+            font-size: 1.5rem;
+            color: var(--pokemon-blue);
+            text-shadow: 2px 2px 0 #000;
             margin-bottom: 15px;
-            font-size: 1.8rem;
-            font-weight: 600;
         }
 
         .start-screen p {
-            color: var(--secondary-color);
-            margin-bottom: 30px;
-            font-size: 1.1rem;
-            line-height: 1.6;
-        }
-
-        .results-screen {
-            text-align: center;
-        }
-
-        .results-screen h2 {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary-color);
+            color: var(--text-color);
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            text-shadow: 1px 1px 0 #000;
         }
 
         .score-circle {
-            width: 180px;
-            height: 180px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
-            margin: 30px auto;
+            margin: 20px auto;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-direction: column;
-            font-size: 2.2rem;
-            font-weight: 700;
-            color: white;
-            background: var(--primary-color);
-            box-shadow: 0 8px 20px rgba(0, 123, 255, 0.2);
-            position: relative;
-            overflow: hidden;
-            border: 4px solid var(--primary-light);
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fff;
+            background: var(--pokemon-red);
+            border: 4px solid var(--border-color);
+            box-shadow: 0 4px 0 var(--border-color);
         }
 
-        .score-circle.excellent { background: var(--correct-color); border-color: rgba(40, 167, 69, 0.2); box-shadow: 0 8px 20px rgba(40, 167, 69, 0.2); }
-        .score-circle.good { background: #ffc107; border-color: rgba(255, 193, 7, 0.2); box-shadow: 0 8px 20px rgba(255, 193, 7, 0.2); }
-        .score-circle.average { background: #17a2b8; border-color: rgba(23, 162, 184, 0.2); box-shadow: 0 8px 20px rgba(23, 162, 184, 0.2); }
-        .score-circle.poor { background: var(--incorrect-color); border-color: rgba(220, 53, 69, 0.2); box-shadow: 0 8px 20px rgba(220, 53, 69, 0.2); }
+        .score-circle.excellent { background: var(--correct-color); }
+        .score-circle.good { background: var(--pokemon-blue); }
+        .score-circle.average { background: var(--pokemon-yellow); color: #333; }
+        .score-circle.poor { background: var(--incorrect-color); }
 
         .score-text {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             margin-top: 5px;
-            font-weight: 500;
+            font-weight: normal;
+            text-shadow: 1px 1px 0 #000;
         }
 
         .results-message {
-            color: #212529;
-            font-size: 1.4rem;
-            font-weight: 600;
-            margin: 20px 0;
+            color: var(--text-color);
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin: 15px 0;
+            text-shadow: 1px 1px 0 #000;
         }
 
         .results-breakdown {
-            background: #f8f9fa;
-            border-radius: var(--border-radius);
-            padding: 25px;
-            margin: 25px 0;
+            background: #1c1c1c;
+            border: 2px solid #555;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-shadow: 1px 1px 0 #000;
         }
 
         .breakdown-item {
             display: flex;
             justify-content: space-between;
-            margin: 10px 0;
-            font-size: 1.05rem;
-            color: #495057;
+            margin: 8px 0;
+            font-size: 0.9rem;
+            color: var(--text-color);
         }
 
         .breakdown-item strong {
-            color: #212529;
-            font-weight: 600;
-        }
-
-        @media (max-width: 600px) {
-            .container {
-                padding: 20px;
-            }
-            
-            .logo {
-                font-size: 1.8rem;
-            }
-            
-            .question h3 {
-                font-size: 1.2rem;
-            }
-            
-            .option {
-                padding: 15px;
-                font-size: 0.95rem;
-            }
-
-            .score-circle {
-                width: 140px;
-                height: 140px;
-                font-size: 1.8rem;
-            }
+            font-weight: bold;
         }
     </style>
 </head>
@@ -332,20 +315,20 @@
     <div class="container">
         <div class="header">
             <div class="logo">Aave V4 Knowledge Test</div>
-            <div class="subtitle">An Interactive Quiz on the Protocol's Latest Update</div>
+            <div class="subtitle">Aave's New Protocol has Appeared!</div>
         </div>
 
                 <div id="start-screen" class="quiz-section active start-screen">
-            <h2>Welcome to the Aave V4 Quiz!</h2>
-            <p>This quiz will test your knowledge of the new architecture, key features, and development progress of the Aave V4 protocol. You'll get instant feedback on each answer and a final score at the end.</p>
+            <h2>Welcome, Trainer!</h2>
+            <p>Are you ready to test your Aave V4 knowledge? Battle through 10 questions and see if you have what it takes to be a DeFi Master. Good luck!</p>
             <div class="buttons">
                 <button class="btn" onclick="startQuiz()">Start Quiz</button>
-        </div>
-        </div>
+            </div>
+    </div>
 
                 <div id="quiz-screen" class="quiz-section">
             <div class="question-counter">
-                <span id="current-question">1</span> of <span id="total-questions">10</span>
+                Q <span id="current-question">1</span> / <span id="total-questions">10</span>
             </div>
             
             <div class="progress-bar">
